@@ -16,6 +16,9 @@ public class OAuth2UserInfoFactory {
         } else if (registrationId.equalsIgnoreCase(AuthProvider.github.name())) {
             log.info("login With={}", registrationId);
             return new GithubOAuth2UserInfo(attributes);
+        } else if (registrationId.equalsIgnoreCase(AuthProvider.kakao.name())) {
+            log.info("login With={}", registrationId);
+            return new KakaoOAuth2UserInfo(attributes);
         } else {
             throw new OAuth2AuthenticationException(registrationId + " is not support");
         }

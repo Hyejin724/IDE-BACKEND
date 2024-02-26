@@ -213,7 +213,7 @@ public class FileService {
 
         int emailIndex = -1;
         for (int i = 0; i < parts.length; i++) {
-            if (parts[i].contains("@")) {
+            if (parts[i].contains("@") || parts[i].contains("-")) {
                 emailIndex = i;
                 break;
             }
@@ -274,6 +274,7 @@ public class FileService {
                 }
 
                 FileTreeResponse child = listFilesAndDirectoriesRecursive(file);
+                System.out.println("child = " + child.getPath());
                 fileInfo.getChildren().add(child);
             }
         }

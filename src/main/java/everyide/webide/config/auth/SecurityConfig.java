@@ -8,7 +8,6 @@ import everyide.webide.config.auth.filter.JwtAuthorizationFilter;
 import everyide.webide.config.auth.jwt.JwtAccessDeniedHandler;
 import everyide.webide.config.auth.jwt.JwtAuthenticationEntryPoint;
 import everyide.webide.config.auth.handler.CustomLogoutSuccessHandler;
-import everyide.webide.config.auth.handler.OAuth2AuthenticationSuccessHandler;
 import everyide.webide.config.auth.jwt.JwtTokenProvider;
 import everyide.webide.config.auth.user.CustomUserDetails;
 import everyide.webide.config.auth.user.CustomUserDetailsService;
@@ -58,7 +57,6 @@ public class SecurityConfig {
     private final CustomOAuth2UserService customOAuth2UserService;
     private final UserRepository userRepository;
     private final JwtTokenProvider jwtTokenProvider;
-    private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
 
     //Spring Security에서 제공하는 클래스, 비밀번호를 안전하게 해싱
     @Bean
@@ -109,12 +107,19 @@ public class SecurityConfig {
         //토큰 발급 시작
         String token = jwtTokenProvider.createToken(authentication);
         String refresh = jwtTokenProvider.createRefreshToken(authentication);
+        log.info("test={}", authentication.getName());
+        log.info("test={}", authentication.getAuthorities());
+        log.info("test={}", authentication.getDetails());
+        log.info("test={}", authentication.getClass());
+        log.info("test={}", authentication.getPrincipal());
+
         log.info(token);
         log.info(refresh);
         ObjectMapper om = new ObjectMapper();
 
         response.addHeader("Authorization", "Bearer " + token);
         log.info("AccessToken in Header={}", token);
+        log.info("header={}", response.getHeader("Authorization"));
 
         Cookie refreshTokenCookie = new Cookie("RefreshToken", refresh);
         refreshTokenCookie.setHttpOnly(true);
@@ -139,7 +144,8 @@ public class SecurityConfig {
         log.info("Response Body insert User");
         String result = om.registerModule(new JavaTimeModule()).writeValueAsString(userDto);
         response.getWriter().write(result);
-        response.sendRedirect("http://localhost:5173/oauth2/redirect/?token="+token);
+//        response.sendRedirect("http://localhost:5173/oauth2/redirect/?token="+token);
+        response.sendRedirect("https://k547f55f71a44a.user-app.krampoline.com/oauth2/redirect/?token="+token);
     }
 
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
@@ -161,7 +167,10 @@ public class SecurityConfig {
         corsConfiguration.addAllowedHeader("*");
         corsConfiguration.addExposedHeader("*");
         corsConfiguration.setAllowCredentials(true);
-        corsConfiguration.setAllowedOrigins(List.of("http://localhost:5173"));
+
+//      corsConfiguration.setAllowedOrigins(List.of("https://ide-frontend-wheat.vercel.app/login", "https://ide-frontend-six.vercel.app", "https://ide-frontend-wheat.vercel.app"));
+        corsConfiguration.setAllowedOrigins(List.of("https://ide-frontend-wheat.vercel.app/login", "krmp-d2hub-idock.9rum.cc/dev-test/repo_85a78215dc68", "https://ide-frontend-six.vercel.app", "https://ide-frontend-wheat.vercel.app", "http://localhost:3000", "https://k547f55f71a44a.user-app.krampoline.com", "http://localhost:5173"));
+
         corsConfiguration.setAllowedMethods(Arrays.asList("GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS"));
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

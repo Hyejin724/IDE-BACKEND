@@ -157,7 +157,16 @@ public class ContainerService {
                 findContainer.getRoom().removeContainer(findContainer);
             }
 
-            containerRepository.save(findContainer.getSourceContainer().unshare());
+            if (findContainer.getSourceContainer() != null) {
+                Optional<Container> optionalContainer = containerRepository.findById(findContainer.getSourceContainer());
+
+                if (optionalContainer.isPresent()) {
+                    Container sourceContainer = optionalContainer.get();
+                    sourceContainer.unshare();
+                    containerRepository.save(sourceContainer);
+                }
+            }
+
             containerRepository.delete(findContainer);
             directoryService.deleteDirectory(new DeleteDirectoryRequest(deleteContainerRequest.getEmail(), "/" + deleteContainerRequest.getName()));
 
@@ -229,7 +238,7 @@ public class ContainerService {
 //                .orElseThrow(() -> new EntityNotFoundException("not found")));
         newContainer.setRoom(roomRepository.findById(copyContainerRequest.getRoomId())
                 .orElseThrow(()-> new EntityNotFoundException("Room not found.")));
-        newContainer.setSourceContainer(sourceContainer);
+        newContainer.setSourceContainer(sourceContainer.getId());
 
         containerRepository.save(newContainer);
         containerRepository.save(sourceContainer.share());

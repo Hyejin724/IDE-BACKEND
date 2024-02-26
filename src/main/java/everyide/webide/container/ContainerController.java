@@ -30,7 +30,7 @@ public class ContainerController {
         if (status.equals(-200L)) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("존재하지 않는 경로입니다. (사용자 이메일 확인)");
         } else if (status.equals(-300L)) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("이미 사용중인 이름입니다.");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("이미 사용중인 이름입니다.");
         } else {
             return ResponseEntity.ok(container);
         }

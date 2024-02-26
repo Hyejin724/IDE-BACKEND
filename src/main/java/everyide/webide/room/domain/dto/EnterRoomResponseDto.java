@@ -10,12 +10,14 @@ import java.util.List;
 public class EnterRoomResponseDto {
     private Room room;
     private String ownerName;
+    private Long ownerId;
     private List<String> usersName;
 
     @Builder
-    public EnterRoomResponseDto(Room room, String ownerName, List<String> usersName) {
+    public EnterRoomResponseDto(Room room, String ownerName, Long ownerId, List<String> usersName) {
         this.room = room;
         this.ownerName = ownerName;
+        this.ownerId = ownerId;
         this.usersName = usersName;
     }
 }

@@ -80,7 +80,8 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     }
 
     private String makeRedirectUrl(String token) {
-        return UriComponentsBuilder.fromUriString("http://localhost:5173/oauth2/redirect/?token="+token)
+        return UriComponentsBuilder.fromUriString("https://k547f55f71a44a.user-app.krampoline.com/oauth2/redirect/?token="+token)
+//        return UriComponentsBuilder.fromUriString("https://ide-frontend-six.vercel.app/oauth2/redirect/?token="+token)
                 .build().toUriString();
     }
 }

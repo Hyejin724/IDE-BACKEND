@@ -3,11 +3,15 @@ package everyide.webide.config.auth.user.oauth2;
 import com.amazonaws.util.StringUtils;
 import everyide.webide.config.auth.exception.OAuth2AuthenticationProcessingException;
 import everyide.webide.config.auth.user.CustomUserDetails;
+import everyide.webide.fileSystem.DirectoryService;
+import everyide.webide.fileSystem.domain.Directory;
 import everyide.webide.user.UserRepository;
 import everyide.webide.user.domain.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
@@ -23,7 +27,11 @@ import java.util.Optional;
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
 
+
+    @Value("${file.basePath}")
+    private String basePath;
     private final UserRepository userRepository;
+    private final DirectoryService directoryService;
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
@@ -79,6 +87,19 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         log.info("find all info from New User");
 
         User newUser = User.createNewUser(provider, providerId, name, email, imageUrl, role);
+        log.info("provider={}", provider);
+        log.info("providerId={}", providerId);
+        log.info("name={}", name);
+        log.info("email={}", email);
+        log.info("imageUrl={}", imageUrl);
+
+        Directory rootDirectory = directoryService.createRootDirectory(newUser.getEmail());
+        if (rootDirectory != null) {
+            newUser.setRootPath(basePath + newUser.getEmail());
+            log.info("회원 등록완료");
+        } else {
+            log.info("루트 디렉토리 생성불가");
+        }
         return userRepository.save(newUser);
     }
 

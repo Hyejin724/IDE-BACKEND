@@ -23,7 +23,7 @@ public class TerminalController {
             @DestinationVariable Long containerId,
             @Payload TerminalExecuteRequestDto requestDto
     ) throws Exception {
-        log.info("웹소켓 터미널 실행, containerId={}, requestDto={}", containerId, requestDto);
+        log.info("웹소켓 터미널 실행, containerId={}, command={}", containerId, requestDto.getCommand());
 
         return terminalService.executeCommand(containerId, requestDto);
     }

@@ -30,9 +30,8 @@ public class Container extends BaseEntity {
     private String language;
     private boolean active;
     private int shared;
+    private Long sourceContainer;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Container sourceContainer;
     @OneToMany(mappedBy = "container")
     private List<Directory> directories = new ArrayList<>();
     @ManyToOne(fetch = FetchType.LAZY)
@@ -64,8 +63,8 @@ public class Container extends BaseEntity {
         room.addContainer(this);
     }
 
-    public void setSourceContainer(Container sourceContainer) {
-        this.sourceContainer = sourceContainer;
+    public void setSourceContainer(Long sourceContainerId) {
+        this.sourceContainer = sourceContainerId;
     }
 
     public void addDirectories(Directory directory) {

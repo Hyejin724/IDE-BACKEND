@@ -42,7 +42,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             }
         }
 
-        if (accessToken != null && accessToken.startsWith("Bearer ")) {
+        if (accessToken != null) {
             String tokenValidationResult = jwtTokenProvider.validateToken(accessToken.replace("Bearer ", ""));
             if ("token expired.".equals(tokenValidationResult)) {
                 log.info("AccessToken is expired");
