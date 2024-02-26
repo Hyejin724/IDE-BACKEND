@@ -14,12 +14,12 @@ public class DirectoryController {
 
     private final DirectoryService directoryService;
 
-    @GetMapping("api/directories")
+    @GetMapping("/api/directories")
     public void getDirectory() {
 
     }
 
-    @PostMapping("api/directories")
+    @PostMapping("/api/directories")
     public ResponseEntity<?> createDirectory(@RequestBody CreateDirectoryRequest createDirectoryRequest) {
         String status = directoryService.createDirectory(createDirectoryRequest);
         if (status.equals("ok")) {
@@ -31,7 +31,7 @@ public class DirectoryController {
         }
     }
 
-    @PatchMapping("api/directories")
+    @PatchMapping("/api/directories")
     public ResponseEntity<?> updateDirectory(@RequestBody UpdateDirectoryRequest updateDirectoryRequest) {
         String status = directoryService.updateDirectory(updateDirectoryRequest);
         if (status.equals("ok")) {
@@ -41,7 +41,7 @@ public class DirectoryController {
         }
     }
 
-    @DeleteMapping("api/directories")
+    @DeleteMapping("/api/directories")
     public ResponseEntity<?> deleteDirectory(@RequestBody DeleteDirectoryRequest deleteDirectoryRequest) {
         String status = directoryService.deleteDirectory(deleteDirectoryRequest);
         if (status.equals("ok")) {

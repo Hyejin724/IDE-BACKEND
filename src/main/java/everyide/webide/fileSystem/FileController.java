@@ -28,7 +28,7 @@ public class FileController {
 
     }
 
-    @PostMapping("api/files")
+    @PostMapping("/api/files")
     public ResponseEntity<?> createFile(@RequestBody CreateFileRequest createFileRequest) {
         String status = fileService.createFile(createFileRequest);
         if (status.equals("ok")) {
@@ -40,7 +40,7 @@ public class FileController {
         }
     }
 
-    @PatchMapping("api/files")
+    @PatchMapping("/api/files")
     public ResponseEntity<?> updateFile(@RequestBody UpdateFileRequest updateFileRequest) {
         String status = fileService.updateFile(updateFileRequest);
         if (status.equals("ok")) {
@@ -50,7 +50,7 @@ public class FileController {
         }
     }
 
-    @DeleteMapping("api/files")
+    @DeleteMapping("/api/files")
     public ResponseEntity<?> deleteFile(@RequestBody DeleteFileRequest deleteFileRequest) {
         String status = fileService.deleteFile(deleteFileRequest);
         if (status.equals("ok")) {

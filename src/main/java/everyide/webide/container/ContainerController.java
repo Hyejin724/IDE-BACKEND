@@ -18,12 +18,12 @@ public class ContainerController {
 
     private final ContainerService containerService;
 
-    @GetMapping("api/{id}/containers")
+    @GetMapping("/api/{id}/containers")
     public ResponseEntity<List<ContainerDetailResponse>> getContainers(@PathVariable("id") String id) {
         return ResponseEntity.ok(containerService.getContainer(id));
     }
 
-    @PostMapping("api/containers")
+    @PostMapping("/api/containers")
     public ResponseEntity<?> createContainers(@RequestBody CreateContainerRequest createContainerRequest) {
         ContainerDetailResponse container = containerService.createContainer(createContainerRequest);
         Long status = container.getId();
@@ -37,7 +37,7 @@ public class ContainerController {
 
     }
 
-    @PatchMapping("api/containers")
+    @PatchMapping("/api/containers")
     public ResponseEntity<?> updateContainers(@RequestBody UpdateContainerRequest updateContainerRequest) {
         String status = containerService.updateContainer(updateContainerRequest);
         if (status.equals("ok")) {
@@ -50,7 +50,7 @@ public class ContainerController {
 
     }
 
-    @DeleteMapping("api/containers")
+    @DeleteMapping("/api/containers")
     public ResponseEntity<?> deleteContainers(@RequestBody DeleteContainerRequest deleteContainerRequest) {
         if (containerService.deleteContainer(deleteContainerRequest)) {
             return ResponseEntity.status(HttpStatus.OK).body("컨테이너 삭제완료.");
@@ -59,7 +59,7 @@ public class ContainerController {
         }
     }
 
-    @PostMapping("api/containers/{containerId}")
+    @PostMapping("/api/containers/{containerId}")
     public ResponseEntity<?> copyContainers(@PathVariable("containerId") Long id, @RequestBody CopyContainerRequest copyContainerRequest) {
         ContainerDetailResponse container = containerService.copyContainer(id, copyContainerRequest);
         Long status = container.getId();
