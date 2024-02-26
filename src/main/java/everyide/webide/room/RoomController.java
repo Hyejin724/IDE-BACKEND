@@ -26,13 +26,9 @@ public class RoomController {
     }
 
     @GetMapping("/api/communities")
-    public ResponseEntity<Slice<RoomResponseDto>> loadAllRooms(
-            @RequestParam(value = "name", required = false) String name,
-            Pageable pageable) {
-        Slice<RoomResponseDto> responseDto = roomService.loadAllRooms(name, pageable);
-        return ResponseEntity.ok().body(responseDto);
+    public ResponseEntity<?> loadAllRooms(@RequestParam(value = "name", required = false) String name) {
+        return ResponseEntity.ok().body(roomService.loadAllRooms(name));
     }
-
     @PatchMapping("/api/community/{roomId}/settings")
     public ResponseEntity<?> updateRoom(@PathVariable("roomId") String roomId, @RequestBody RoomFixDto roomfixDto) {
         roomService.fixRoom(roomId, roomfixDto);

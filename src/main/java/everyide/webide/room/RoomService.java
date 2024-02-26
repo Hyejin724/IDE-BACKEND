@@ -73,29 +73,20 @@ public class RoomService {
         return room;
     }
 
-    public Slice<RoomResponseDto> loadAllRooms(String name, Pageable pageable) {
-        List<RoomResponseDto> collect = new ArrayList<>();
+    public List<RoomResponseDto> loadAllRooms(String name) {
         if (name == null) {
-            collect = roomRepository.findAllByAvailableTrue()
+            return roomRepository.findAllByAvailableTrue()
                     .stream()
-                    .sorted(Comparator.comparing(Room::getCreateDate).reversed())
-                    .map(this::toRoomResponseDto)
-                    .collect(Collectors.toList());
-        } else {
-            collect = roomRepository.findAllByNameContaining(name)
-                    .stream()
-                    .filter(Room::getAvailable)
                     .sorted(Comparator.comparing(Room::getCreateDate).reversed())
                     .map(this::toRoomResponseDto)
                     .collect(Collectors.toList());
         }
-        int start = (int) pageable.getOffset();
-        int end = Math.min(start + pageable.getPageSize(), collect.size());
-        List<RoomResponseDto> slicedData = collect.subList(start, end);
-
-        boolean hasNext = end < collect.size();
-
-        return new SliceImpl<>(slicedData, pageable, hasNext);
+        return roomRepository.findAllByNameContaining(name)
+                .stream()
+                .filter(Room::getAvailable)
+                .sorted(Comparator.comparing(Room::getCreateDate).reversed())
+                .map(this::toRoomResponseDto)
+                .collect(Collectors.toList());
     }
 
     public EnterRoomResponseDto enteredRoom(String roomId, String password) {
