@@ -16,6 +16,9 @@ import everyide.webide.user.domain.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -70,20 +73,29 @@ public class RoomService {
         return room;
     }
 
-    public List<RoomResponseDto> loadAllRooms(String name) {
+    public Slice<RoomResponseDto> loadAllRooms(String name, Pageable pageable) {
+        List<RoomResponseDto> collect = new ArrayList<>();
         if (name == null) {
-            return roomRepository.findAllByAvailableTrue()
+            collect = roomRepository.findAllByAvailableTrue()
                     .stream()
                     .sorted(Comparator.comparing(Room::getCreateDate).reversed())
                     .map(this::toRoomResponseDto)
                     .collect(Collectors.toList());
+        } else {
+            collect = roomRepository.findAllByNameContaining(name)
+                    .stream()
+                    .filter(Room::getAvailable)
+                    .sorted(Comparator.comparing(Room::getCreateDate).reversed())
+                    .map(this::toRoomResponseDto)
+                    .collect(Collectors.toList());
         }
-        return roomRepository.findAllByNameContaining(name)
-                .stream()
-                .filter(Room::getAvailable)
-                .sorted(Comparator.comparing(Room::getCreateDate).reversed())
-                .map(this::toRoomResponseDto)
-                .collect(Collectors.toList());
+        int start = (int) pageable.getOffset();
+        int end = Math.min(start + pageable.getPageSize(), collect.size());
+        List<RoomResponseDto> slicedData = collect.subList(start, end);
+
+        boolean hasNext = end < collect.size();
+
+        return new SliceImpl<>(slicedData, pageable, hasNext);
     }
 
     public EnterRoomResponseDto enteredRoom(String roomId, String password) {

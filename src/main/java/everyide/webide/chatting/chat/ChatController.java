@@ -12,22 +12,20 @@ public class ChatController {
 
     private final ChatService chatService;
 
-    // 입장시 채팅기록 전송
+    // 입장시 채팅기록 전송 or 위로 스크롤하면 이전 기록 전송
     @GetMapping("/api/container/{containerId}/chat/prev")
-    public ResponseEntity<?> getMessages(@PathVariable String containerId) {
-        return ResponseEntity.ok(chatService.getMessages(containerId));
-    }
-
-    // 위로 스크롤하면 이전 기록 전송
-    @GetMapping("/api/container/{containerId}/chat/prev/{messageId}")
-    public ResponseEntity<?> getPrevMessages(@PathVariable String containerId, @PathVariable String messageId) {
-        return ResponseEntity.ok((chatService.getPrevMessages(containerId, messageId)));
+    public ResponseEntity<?> getPrevMessages(@PathVariable String containerId, @RequestParam(required = false) String cursor) {
+        if (cursor == null) {
+            return ResponseEntity.ok(chatService.getMessages(containerId));
+        } else {
+            return ResponseEntity.ok((chatService.getPrevMessages(containerId, cursor)));
+        }
     }
 
     // 아래로 스크롤하면 다음 기록 전송
-    @GetMapping("/api/container/{containerId}/chat/next/{messageId}")
-    public ResponseEntity<?> getNextMessages(@PathVariable String containerId, @PathVariable String messageId) {
-        return ResponseEntity.ok(chatService.getNextMessages(containerId, messageId));
+    @GetMapping("/api/container/{containerId}/chat/next")
+    public ResponseEntity<?> getNextMessages(@PathVariable String containerId, @RequestParam String cursor) {
+        return ResponseEntity.ok(chatService.getNextMessages(containerId, cursor));
     }
 
     // 메세지 검색

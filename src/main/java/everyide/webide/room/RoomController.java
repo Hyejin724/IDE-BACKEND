@@ -2,11 +2,16 @@ package everyide.webide.room;
 
 import everyide.webide.room.domain.CreateRoomRequestDto;
 import everyide.webide.room.domain.Room;
+import everyide.webide.room.domain.RoomResponseDto;
 import everyide.webide.room.domain.dto.EnterRoomResponseDto;
 import everyide.webide.room.domain.dto.RoomFixDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -21,8 +26,11 @@ public class RoomController {
     }
 
     @GetMapping("/api/communities")
-    public ResponseEntity<?> loadAllRooms(@RequestParam(value = "name", required = false) String name) {
-        return ResponseEntity.ok().body(roomService.loadAllRooms(name));
+    public ResponseEntity<Slice<RoomResponseDto>> loadAllRooms(
+            @RequestParam(value = "name", required = false) String name,
+            Pageable pageable) {
+        Slice<RoomResponseDto> responseDto = roomService.loadAllRooms(name, pageable);
+        return ResponseEntity.ok().body(responseDto);
     }
 
     @PatchMapping("/api/community/{roomId}/settings")
