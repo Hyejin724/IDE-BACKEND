@@ -76,12 +76,12 @@ public class SecurityConfig {
                         .failureHandler(this::onAuthenticationFailure)
                 )
                 .logout(logout -> logout
-                        .logoutUrl("/logout")
+                        .logoutUrl("/api/logout")
                         .logoutSuccessHandler(new CustomLogoutSuccessHandler(jwtTokenProvider, customUserDetailsService))
                         .deleteCookies("JSESSIONID")
                         .permitAll()
                 )
-                .addFilter(new JwtAuthenticationFilter(jwtTokenProvider, userRepository, authenticationManager(customUserDetailsService), customUserDetailsService, "/auth"))
+                .addFilter(new JwtAuthenticationFilter(jwtTokenProvider, userRepository, authenticationManager(customUserDetailsService), customUserDetailsService, "/api/auth"))
                 .addFilterAfter(new JwtAuthorizationFilter(userRepository, jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(auth -> auth
 //                        .requestMatchers(
